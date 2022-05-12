@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, Integer
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean,Float
 from db.base_class import Base
 
 class StatisticsCountries(Base):
@@ -13,3 +13,12 @@ class StatisticsCountries(Base):
 class Vehicles(Base):
     id = Column(Integer,primary_key=True,index=True)
     vehicle_id = Column(Integer)
+class Delegaciones(Base):
+    id = Column(Integer,primary_key=True,index=True)
+    delegacion = Column(String)
+    nombre = Column(String)
+    titulo = Column(String)
+    codigo_postal_inicial = Column(String)
+    codigo_postal_final = Column(String)
+     
+
