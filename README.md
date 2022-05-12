@@ -10,16 +10,15 @@
 
 
 
-url aplicacion :  https://fastapi-api-challenge-tangelo.herokuapp.com/
-Este servidor responde a solicitudes tipo GET de acuerdo a las especificaciones solo tenemos un endpoint el cual a su vez consume una API REST externa para
-la extraccion  y clasifcacion de datos asociados a paises , de acuerdo a esto para poder ejecutar el proyecto debemos hacer lo siguiente
+url aplicacion :  
+
 # INSTALACION [HEROKU-SERVIDOR][CON DOCKER]
 debe tener una cuenta creada en heroku y descargar el cliente de heroku luego:
     heroku login
     heroku container:login
-    heroku create fastapi-api-challenge-tangelo  #o el nombre que desee
-    heroku container:push web -a  fastapi-api-challenge-tangelo
-    heroku container:release web -a  fastapi-api-challenge-tangelo  #esto despliega
+    heroku create nombre_app  #o el nombre que desee
+    heroku container:push web -a  nombre_app
+    heroku container:release web -a  nombre_app  #esto despliega
 
 
 
@@ -28,13 +27,13 @@ debe tener una cuenta creada en heroku y descargar el cliente de heroku luego:
 1: tener instalado docker
 
 clonar el proyecto y en la carpeta al nivel del Dockerfile ejecutar el siguiente comando
-> docker build -t fastapi-api-challenge-tangelo .
+> docker build -t nombre_imagen .
 
 el punto indica que creara una imagen de docker apartir del Dockerfile que se encuentra
 en la ruta actual donde ejecuta el comando , una vez realizado esto la imagen estara creada
 y podra crear un contenedor de la api con el siguiente comando
 
-> docker run -p 8000:8000 fastapi-api-challenge-tangelo
+> docker run -p 8000:8000 nombre_app
 
 este comando ejecutara un container de la api , expuesto en el puerto 8000 de la maquina propia
 y por lo tanto ya podra dirigirse a la ruta http://localhost:8000 y al invocar este url en la raiz debe esperar a que cargue la api y podra ver los resultados del procesamiento de datos y si entra al contenedor podra ver que en los archivos , se creo automaticamente data.json y la base de datos postgresql siempre esta en funcionamiento en heroku, si desea conectarse a ella
