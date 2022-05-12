@@ -7,3 +7,9 @@ class StatisticsCountries(Base):
     mean_time = Column(Float)
     min_time = Column(Float)
     max_time = Column(Float)
+
+
+
+class Vehicles(Base):
+    id = Column(Integer,primary_key=True,index=True)
+    vehicle_id = Column(Integer)
