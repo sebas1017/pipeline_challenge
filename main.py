@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 from db.session import get_db, engine 
 from db.base import Base  
 from db.models.statistics import Vehicles
-from db.models.serializer import VehicleAvailable
-from fastapi.encoders import jsonable_encoder
+
+
 
 import json
 import requests
@@ -29,7 +29,7 @@ def insert_data(db, data):
 	try:
 		for record in data:
 			db_statistics = Vehicles(
-			vehicle_id = record["vehicle_id"]
+			 **record
 			)
 			db.add(db_statistics)
 			db.commit()
@@ -54,22 +54,20 @@ async def index(response:Response, db: Session = Depends(get_db)):
 		for unit in units_availables:
 			if unit["vehicle_current_status"] == 1:
 				data = {
-				"vehicle_id":unit["vehicle_current_status"],
+				"vehicle_id":unit["vehicle_id"],
 				"vehicle_label":unit["vehicle_label"],
-				"vehicle_current_status":unit["vehicle_current_status"],
 				"position_latitude":unit["position_latitude"],
 				"position_longitude":unit["position_longitude"],
-				"geographic_point":unit["geographic_point"],
 				"position_speed":unit["position_speed"],
 				"position_odometer":unit["position_odometer"],
 				"trip_schedule_relationship":unit["trip_schedule_relationship"],
 				"trip_id":unit["trip_id"],
-				"trip_start_date":unit["trip_start_date"],
 				"trip_route_id":unit["trip_route_id"]
 				}
 				units_final_availables.append(data)
 		db.query(Vehicles).delete()
 		db.commit()
+		insert_data(db, units_final_availables)
 		return units_final_availables
 		
 			
@@ -87,13 +85,25 @@ async def index(response:Response, db: Session = Depends(get_db)):
 @app.get("/api/v1/vehicles/{id}")
 async def index(id, response:Response, db: Session = Depends(get_db)):
 	data_vehicles_filter = db.query(Vehicles).filter(Vehicles.vehicle_id==id).all()
-	response_data = {"vehicle_id": data_vehicles_filter[0].vehicle_id}
-	response.status_code == 200
-	return response_data
+	if len(data_vehicles_filter) == 0:
+		response.status_code == 404
+		return {"message":"El id ingresado no existe en la base de datos"}
+	else:
+		data_vehicles_filter = data_vehicles_filter[0]
+		data = {
+					"vehicle_id":data_vehicles_filter.vehicle_id,
+					"vehicle_label":data_vehicles_filter.vehicle_label,
+					"position_latitude":data_vehicles_filter.position_latitude,
+					"position_longitude":data_vehicles_filter.position_longitude,
+					"position_speed":data_vehicles_filter.position_speed,
+					"position_odometer":data_vehicles_filter.position_odometer,
+					"trip_schedule_relationship":data_vehicles_filter.trip_schedule_relationship,
+					"trip_id":data_vehicles_filter.trip_id,
+					"trip_route_id":data_vehicles_filter.trip_route_id
+					}
+		response.status_code == 200
+		return data
 	
-	
-	
-	return {"message":"Desde el 2 endpoint"}
 app.include_router(delegacion.router)
 if __name__=="__main__":
 	PORT = int(os.environ.get('PORT', 8000))
