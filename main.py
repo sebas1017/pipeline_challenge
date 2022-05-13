@@ -4,9 +4,8 @@ from core.config import settings
 from sqlalchemy.orm import Session
 from db.session import get_db, engine 
 from db.base import Base  
-from db.models.statistics import Delegaciones, Vehicles
+from db.models.statistics import  DelegationsVehicles, Vehicles
 from delegacion.routers import delegacion
-from functions.function import execute_calculus_postal_codes
 import requests
 import os
 import uvicorn
@@ -35,7 +34,7 @@ def insert_data(db, data):
 
 
 
-@app.get("/api/v1/all_vehicles")
+@app.get("/api/v1/insert_vehicles")
 async def all_vehicles(response:Response, db: Session = Depends(get_db)):
 	url = "https://datos.cdmx.gob.mx/api/3/action/datastore_search?resource_id=ad360a0e-b42f-482c-af12-1fd72140032e"	
 	response = requests.get(url)
@@ -61,24 +60,37 @@ async def all_vehicles(response:Response, db: Session = Depends(get_db)):
 		db.execute(
         """ SELECT SETVAL('public."vehicles_id_seq"', COALESCE(MAX(id), 1)) FROM vehicles""")
 		insert_data(db, units_final_availables)
-		filter_units_availables=[ record for record in units_final_availables if record["vehicle_current_status"]==1]
-		return filter_units_availables	
+		return {"message":"insercion de vehiculos exitosa"}
 
 	else:
 		response.status_code = 500
 		return {"message":"Error en API externa de datos de metrobus recargar nuevamente"}
 
 				
-
-
-@app.get("/api/v1/vehicles_delegations")
+@app.get("/api/v1/get_all_vehicles")
 async def vehicles_delegations(response:Response, db: Session = Depends(get_db)):
-	total_vehicles = db.query(Vehicles).all()
-	total_delegations = db.query(Delegaciones).all()
-	total_vehicles = [(record.vehicle_id,record.position_latitude,record.position_longitude) for record in total_vehicles]
-	total_delegations = [(record.delegacion,record.codigo_postal_inicial,record.codigo_postal_final)for record in total_delegations]
-	execute_calculus_postal_codes(total_vehicles,total_delegations )
-	return {"message":"ok"}
+	vehicles_total = db.query(Vehicles).filter(Vehicles.vehicle_current_status==1).all()
+	if len(vehicles_total) == 0:
+		return {"message":"No existen vehiculos creados , favor ejecutar el endpoint insert_vehicles primer"}
+	else:
+		return vehicles_total
+
+
+@app.get("/api/v1/get_relation_vehicles_delegations")
+async def get_relation_vehicles_delegations(response:Response, db: Session = Depends(get_db)):
+	final_relation = {}
+	relations  = db.query(DelegationsVehicles).all()
+	if len( relations ) == 0:
+		return {"message" : "no existen datos de delegaciones"}
+	else:
+		for delegation in relations:
+			if delegation.delegation_name in final_relation:
+				final_relation[delegation.delegation_name]["vehicles_ids"].append(delegation.vehicle_id)
+			else:
+				final_relation[delegation.delegation_name] ={"vehicles_ids": [delegation.vehicle_id]}
+		return final_relation
+		
+		
 
 
 

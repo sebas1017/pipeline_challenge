@@ -1,13 +1,13 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean,Float
+from sqlalchemy import Column, Integer, String, ForeignKey,Float
 from db.base_class import Base
-class StatisticsCountries(Base):
+
+from sqlalchemy.orm import relationship
+
+class DelegationsVehicles(Base):
     id = Column(Integer,primary_key=True,index=True)
-    total_time = Column(Float)
-    mean_time = Column(Float)
-    min_time = Column(Float)
-    max_time = Column(Float)
-
-
+    vehicle_id = Column(Integer)
+    delegation_name = Column(String)
+    delegation_id =   Column(Integer, ForeignKey("delegaciones.id"))
 
 class Vehicles(Base):
     id = Column(Integer,primary_key=True,index=True)

@@ -1,14 +1,11 @@
-from ast import Try
-from pickle import TRUE
 import requests
-import geopy
-import pandas as pd
 from bs4 import BeautifulSoup
 
 def obtener_datos_delegaciones():
 	lista_url = obtener_url()
 	datos = obtener_data_delegados(lista_url)
 	return datos 
+
 
 def obtener_url():
 	r = requests.get('https://www.archivo.cdmx.gob.mx/gobierno/delegaciones')
@@ -41,8 +38,4 @@ def obtener_data_delegados(lista):
 
 
 
-
-def execute_calculus_postal_codes(array_vehicles,array_delegations):
-	print("ENTREEE")
-	return True
 
