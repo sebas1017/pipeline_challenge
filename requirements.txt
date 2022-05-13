@@ -34,3 +34,4 @@ urllib3==1.26.9
 uvicorn==0.17.6
 gunicorn
 bs4
+geopy
