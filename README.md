@@ -94,3 +94,4 @@ de este resultado tome el id del container y ejecute
 una vez aqui podra ejecutar el comando de tests 
 
 > coverage run -m pytest tests
+sudo lsof -t -i tcp:8000 | xargs kill -9

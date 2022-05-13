@@ -1,4 +1,8 @@
+from ast import Try
+from pickle import TRUE
 import requests
+import geopy
+import pandas as pd
 from bs4 import BeautifulSoup
 
 def obtener_datos_delegaciones():
@@ -33,3 +37,12 @@ def obtener_data_delegados(lista):
 		data.append(dic)
 	return data 
 		
+
+
+
+
+
+def execute_calculus_postal_codes(array_vehicles,array_delegations):
+	print("ENTREEE")
+	return True
+

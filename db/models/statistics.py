@@ -13,6 +13,7 @@ class Vehicles(Base):
     id = Column(Integer,primary_key=True,index=True)
     vehicle_id = Column(Integer)
     vehicle_label=Column(Integer)
+    vehicle_current_status=Column(Integer)
     position_latitude=Column(Float)
     position_longitude=Column(Float)
     position_speed=Column(Integer)

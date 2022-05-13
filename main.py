@@ -4,25 +4,20 @@ from core.config import settings
 from sqlalchemy.orm import Session
 from db.session import get_db, engine 
 from db.base import Base  
-from db.models.statistics import Vehicles
-
-
-
-import json
+from db.models.statistics import Delegaciones, Vehicles
+from delegacion.routers import delegacion
+from functions.function import execute_calculus_postal_codes
 import requests
-import pandas as pd
-import time
-import random
-import hashlib
 import os
 import uvicorn
-# from functions.function import *
-from delegacion.routers import delegacion
+
+
+
 def create_tables():           
 	Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title=settings.PROJECT_NAME,version=settings.PROJECT_VERSION)
-# app = FastAPI()
+
 create_tables()      
 	
 def insert_data(db, data):
@@ -39,23 +34,19 @@ def insert_data(db, data):
 		return "Por el momento nuestro servidor se encuentra abajo Espere por favor..."
 
 
-@app.get("/")
-async def index(response:Response):#, db: Session = Depends(get_db)):
-	  return {"message":"hola mundo"}
-
 
 @app.get("/api/v1/all_vehicles")
-async def index(response:Response, db: Session = Depends(get_db)):
+async def all_vehicles(response:Response, db: Session = Depends(get_db)):
 	url = "https://datos.cdmx.gob.mx/api/3/action/datastore_search?resource_id=ad360a0e-b42f-482c-af12-1fd72140032e"	
 	response = requests.get(url)
 	units_final_availables = []
 	if response.status_code == 200:
 		units_availables =  response.json()["result"]["records"]
 		for unit in units_availables:
-			if unit["vehicle_current_status"] == 1:
 				data = {
 				"vehicle_id":unit["vehicle_id"],
 				"vehicle_label":unit["vehicle_label"],
+				"vehicle_current_status":unit["vehicle_current_status"],
 				"position_latitude":unit["position_latitude"],
 				"position_longitude":unit["position_longitude"],
 				"position_speed":unit["position_speed"],
@@ -68,40 +59,41 @@ async def index(response:Response, db: Session = Depends(get_db)):
 		db.query(Vehicles).delete()
 		db.commit()
 		insert_data(db, units_final_availables)
-		return units_final_availables
-		
-			
+		filter_units_availables=[ record for record in units_final_availables if record["vehicle_current_status"]==1]
+		return filter_units_availables	
 
 	else:
-		response.status_code == 500
+		response.status_code = 500
 		return {"message":"Error en API externa de datos de metrobus recargar nuevamente"}
 
 				
 
 
+@app.get("/api/v1/vehicles_delegations")
+async def vehicles_delegations(response:Response, db: Session = Depends(get_db)):
+	total_vehicles = db.query(Vehicles).all()
+	total_delegations = db.query(Delegaciones).all()
+	total_vehicles = [(record.vehicle_id,record.position_latitude,record.position_longitude) for record in total_vehicles]
+	total_delegations = [(record.delegacion,record.codigo_postal_inicial,record.codigo_postal_final)for record in total_delegations]
+	execute_calculus_postal_codes(total_vehicles,total_delegations )
+	return {"message":"ok"}
+
 
 
 
 @app.get("/api/v1/vehicles/{id}")
-async def index(id, response:Response, db: Session = Depends(get_db)):
+async def filter_vehicles(id, response:Response, db: Session = Depends(get_db)):
 	data_vehicles_filter = db.query(Vehicles).filter(Vehicles.vehicle_id==id).all()
 	if len(data_vehicles_filter) == 0:
-		response.status_code == 404
+		response.status_code = 404
 		return {"message":"El id ingresado no existe en la base de datos"}
 	else:
 		data_vehicles_filter = data_vehicles_filter[0]
 		data = {
-					"vehicle_id":data_vehicles_filter.vehicle_id,
-					"vehicle_label":data_vehicles_filter.vehicle_label,
 					"position_latitude":data_vehicles_filter.position_latitude,
 					"position_longitude":data_vehicles_filter.position_longitude,
-					"position_speed":data_vehicles_filter.position_speed,
-					"position_odometer":data_vehicles_filter.position_odometer,
-					"trip_schedule_relationship":data_vehicles_filter.trip_schedule_relationship,
-					"trip_id":data_vehicles_filter.trip_id,
-					"trip_route_id":data_vehicles_filter.trip_route_id
 					}
-		response.status_code == 200
+		response.status_code = 200
 		return data
 	
 app.include_router(delegacion.router)

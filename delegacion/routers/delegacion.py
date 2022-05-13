@@ -1,18 +1,18 @@
-from fastapi import APIRouter, Depends, Response, HTTPException, status
+from fastapi import APIRouter, Depends, Response
 from db.models import *
 from sqlalchemy.orm import Session
-import requests
 from functions.function import * 
 from delegacion.repository.delegacion import insert_delegacion
-from db.session import get_db, engine 
+from db.session import get_db 
 
 router = APIRouter(
-    prefix='/delegacion',
+    prefix='/api/v1',
     tags=['Delegacion']
 )
 
-@router.get("/")
+@router.get("/delegacion")
 async def datos_delegaciones(response:Response,db: Session = Depends(get_db)):
 	datos = obtener_datos_delegaciones()
 	insert_delegacion(datos,db)
-	return {"Respuesta":"Insert de delegaciones creados satisfactoriamente!!"}
+	response.status_code == 200
+	return datos
