@@ -16,3 +16,7 @@ def insert_delegacion(datos,db:Session):
         db.add(new_delegacion)
         db.commit()
         db.refresh(new_delegacion)
+
+def obtener_todas_delegaciones(db:Session):
+    delegaciones = db.query(Delegaciones).all()
+    return delegaciones

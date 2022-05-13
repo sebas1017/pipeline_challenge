@@ -58,6 +58,8 @@ async def all_vehicles(response:Response, db: Session = Depends(get_db)):
 				units_final_availables.append(data)
 		db.query(Vehicles).delete()
 		db.commit()
+		db.execute(
+        """ SELECT SETVAL('public."vehicles_id_seq"', COALESCE(MAX(id), 1)) FROM vehicles""")
 		insert_data(db, units_final_availables)
 		filter_units_availables=[ record for record in units_final_availables if record["vehicle_current_status"]==1]
 		return filter_units_availables	
