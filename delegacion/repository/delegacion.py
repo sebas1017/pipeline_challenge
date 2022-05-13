@@ -6,6 +6,9 @@ import requests
 def delete_all_delegacion(db:Session):
     db.query(Delegaciones).delete()
     db.commit()
+    db.execute(
+        """ SELECT SETVAL('public."delegaciones_id_seq"', COALESCE(MAX(id), 1)) FROM delegaciones""")
+
 def insert_delegacion(datos,db:Session):
     delete_all_delegacion(db)
     for i in datos:
