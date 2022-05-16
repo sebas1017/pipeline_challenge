@@ -2,7 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from typing import Generator   
 from core.config import settings
-
+from sqlalchemy.orm import sessionmaker,scoped_session
+from sqlalchemy.ext.declarative import declarative_base
 
 SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
@@ -15,8 +16,11 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL)
 #     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 # )
 
-SessionLocal = sessionmaker(autocommit=False,autoflush=False,bind=engine)
+#SessionLocal = sessionmaker(autocommit=False,autoflush=False,bind=engine)
+SessionLocal = scoped_session(sessionmaker(bind=engine,autocommit=False,autoflush=False))
+Base = declarative_base()
 
+Base.query = SessionLocal.query_property()
 
 def get_db() -> Generator:   #new
     try:

@@ -3,13 +3,16 @@ from psycopg2 import OperationalError
 from core.config import settings
 from sqlalchemy.orm import Session
 from db.session import get_db, engine 
-from db.base import Base  
+# from db.base import Base
+from db.session import Base  
 from db.models.statistics import  DelegationsVehicles, Vehicles
 from delegacion.routers import delegacion
 import requests
 import os
 import uvicorn
-
+from starlette.graphql import GraphQLApp
+import graphene
+from delegacion.repository import graphql
 
 
 def create_tables():           
@@ -111,6 +114,12 @@ async def filter_vehicles(id, response:Response, db: Session = Depends(get_db)):
 		return data
 	
 app.include_router(delegacion.router)
+app.add_route(
+    "/graphql",
+    GraphQLApp(
+        schema=graphene.Schema(
+            query=graphql.Query),
+        graphiql=True))
 if __name__=="__main__":
 	PORT = int(os.environ.get('PORT', 8000))
 	uvicorn.run("main:app",host='0.0.0.0',port=PORT ,reload=True)

@@ -4,6 +4,7 @@ from db.models.statistics import Delegaciones,DelegationsVehicles, Vehicles
 import geopy
 import pandas as pd
 import requests
+
 def delete_all_delegacion(db:Session):
     db.query(DelegationsVehicles).delete()
     db.query(Delegaciones).delete()
@@ -11,7 +12,7 @@ def delete_all_delegacion(db:Session):
     db.execute(
         """ SELECT SETVAL('public."delegaciones_id_seq"', COALESCE(MAX(id), 1)) FROM delegaciones""")
     db.execute(
-        """ SELECT SETVAL('public."delegationsvehicles_id_seq"', COALESCE(MAX(id), 1)) FROM delegationsvehicles""")
+        """ SELECT SETVAL('public."delegaciones_vehicles_id_seq"', COALESCE(MAX(id), 1)) FROM delegaciones_vehicles""")
 
 def insert_delegacion(datos,db:Session):
     delete_all_delegacion(db)
