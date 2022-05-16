@@ -3,7 +3,6 @@ from psycopg2 import OperationalError
 from core.config import settings
 from sqlalchemy.orm import Session
 from db.session import get_db, engine 
-# from db.base import Base
 from db.session import Base  
 from db.models.statistics import  DelegationsVehicles, Vehicles
 from delegacion.routers import delegacion
