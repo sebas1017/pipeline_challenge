@@ -1,11 +1,5 @@
-from starlette.graphql import GraphQLApp
-# from blog.schemas import *
 from delegacion.schemas_graphql import DelegacionModel
 import graphene
-from db.session import get_db, SessionLocal
-from sqlalchemy.orm import Session
-from delegacion.repository import delegacion
-from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 
 
 class Query(graphene.ObjectType):
