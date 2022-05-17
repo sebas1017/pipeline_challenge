@@ -99,3 +99,6 @@ ejecutar GRAPHQL
               delegacion
             }
         }
+
+https://manager-pipeline-challenge.herokuapp.com/docs
+https://api-challenge-pipeline.herokuapp.com/docs
