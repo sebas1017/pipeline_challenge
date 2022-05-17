@@ -1,12 +1,10 @@
 from graphene.test import Client
 import pytest
 from starlette.testclient import TestClient
-from starlette.status import HTTP_200_OK
 import sys
 import os 
 import graphene
 sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
-from main import app
 from delegacion.repository import graphql
 
 @pytest.fixture(scope="module")
