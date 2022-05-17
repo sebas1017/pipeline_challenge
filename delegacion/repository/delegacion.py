@@ -24,18 +24,9 @@ def insert_delegacion(datos,db:Session):
     insert_relacion_delegaciones(db)
 
     
-
 def obtener_todas_delegaciones(db:Session):
     delegaciones = db.query(Delegaciones).all()
     return delegaciones
-
-
-
-
-
-
-
-
 
 
 def get_zipcode(df, geolocator, lat_field, lon_field,ids):
@@ -49,15 +40,10 @@ def get_zipcode(df, geolocator, lat_field, lon_field,ids):
 		return (df[ids],postcode)
 
 
-
-		
-
 def execute_calculus_postal_codes(array_vehicles,array_delegations):
 	array_ids = [record[0]for record in array_vehicles]
 	array_lats =[record[1] for record in array_vehicles ] 
 	array_longs = [record[2] for record in array_vehicles]
-
-
 
 	geolocator = geopy.Nominatim(user_agent='api_postalcodes')
 
@@ -76,17 +62,7 @@ def execute_calculus_postal_codes(array_vehicles,array_delegations):
 			code_init, code_end = int(delegation[1]),int(delegation[2])
 			if post_code >= code_init and post_code <=code_end:
 				results_relations_delegations.append((vehicle_id, delegation[0], delegation[3]))
-			else:
-				print("NO ESTAN DENTRO DEL RANGO")
-				print(vehicle_id)
-				print(post_code)
-				print(20*"___")
 	return results_relations_delegations
-
-
-
-
-
 
 
 def insert_relacion_delegaciones(db:Session):

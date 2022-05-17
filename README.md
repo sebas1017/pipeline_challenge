@@ -1,13 +1,4 @@
 # API-REST COUNTRIES
-![alt text](https://github.com/sebas1017/fastapi_tangelo_challenge/blob/main/images_demo/docker.jpeg?raw=true)
-
-![alt text](https://github.com/sebas1017/fastapi_tangelo_challenge/blob/main/images_demo/postgresql.jpeg?raw=true)
-
-
-![alt text](https://github.com/sebas1017/fastapi_tangelo_challenge/blob/main/images_demo/heroku.png?raw=true)
-
-![alt text](https://github.com/sebas1017/fastapi_tangelo_challenge/blob/main/images_demo/fastapi.png?raw=true)
-
 
 
 url aplicacion :  
@@ -94,8 +85,13 @@ de este resultado tome el id del container y ejecute
 una vez aqui podra ejecutar el comando de tests 
 
 > coverage run -m pytest tests
+
+
+en caso de tener el puerto ocupado ejecutar:
 sudo lsof -t -i tcp:8000 | xargs kill -9
 
+
+ejecutar GRAPHQL
 > ruta http://localhost:8000/graphql 
         query{
             allDelegaciones{
