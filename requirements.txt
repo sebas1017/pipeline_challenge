@@ -1,6 +1,5 @@
 python-dotenv
 requests
-fastapi<=0.66.0
 SQLAlchemy
 pandas
 bs4
@@ -8,8 +7,9 @@ pytest
 psycopg2
 geopy
 graphene-sqlalchemy
+uvicorn
+anyio
 graphene<3
 graphql-core<3
 starlette==0.14.2
-uvicorn
-anyio
+fastapi<=0.66.0
